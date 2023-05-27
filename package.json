@@ -18,5 +18,8 @@
         "vite": "^4.0.0",
         "vue": "^3.2.37",
         "vue-router": "^4.2.1"
+    },
+    "dependencies": {
+        "vuex": "^4.0.2"
     }
 }
