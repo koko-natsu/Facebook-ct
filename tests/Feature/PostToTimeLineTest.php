@@ -12,12 +12,19 @@ class PostToTimeLineTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->withoutExceptionHandling();
+        User::factory()->create();
+    }
+
+
     /** @test */
     function a_user_can_post_a_text_post()
     {
-        $this->withoutExceptionHandling();
-
-        $this->actingAs($user = User::factory()->create(), 'api');
+        $this->actingAs($user = User::find(1), 'api');
 
         $response = $this->post('/api/posts', [
             'data' => [

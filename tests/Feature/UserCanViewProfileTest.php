@@ -12,7 +12,7 @@ class UserCanViewProfileTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup(): void
+    protected function setup(): void
     {   
         parent::setUp();
 
@@ -26,7 +26,6 @@ class UserCanViewProfileTest extends TestCase
     function a_user_can_view_user_profiles()
     {
         $this->actingAs($user = User::find(1), 'api');
-        $posts = Post::factory(2)->create(['user_id' => $user->id]);
 
         $response = $this->get('/api/users/' . $user->id);
 
