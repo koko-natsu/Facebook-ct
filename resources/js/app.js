@@ -7,7 +7,7 @@ import App from '@/components/App.vue';
 const app = createApp({
     components: {
         App
-    }
+    },
 });
 
 

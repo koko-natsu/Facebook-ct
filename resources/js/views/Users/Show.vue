@@ -11,14 +11,20 @@ export default {
 
     data() {
         return {
-            user: [],
-            posts: [],
+            user: {
+                data: {
+                    attributes: {
+                        name: '',
+                    }
+                }
+            },
+            posts: {},
             userLoading: true,
             postLoading: true,
         }
     },
 
-    beforeMount() {
+    mounted() {
         axios.get('/api/users/' + this.$route.params.userId)
             .then(res => {
                 this.user = res.data;
