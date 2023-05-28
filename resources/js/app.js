@@ -3,6 +3,7 @@ import './bootstrap';
 import { createApp } from 'vue';
 import router from '@/router';
 import App from '@/components/App.vue';
+import store from '@/store';
 
 const app = createApp({
     components: {
@@ -10,5 +11,4 @@ const app = createApp({
     },
 });
 
-
-app.use(router).mount('#app');
+app.use(router).use(store).mount('#app');
