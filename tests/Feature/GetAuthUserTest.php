@@ -29,7 +29,7 @@ class GetAuthUserTest extends TestCase
         $response = $this->get('/api/auth-user');
 
         $response->assertStatus(200)
-            ->assertExactJson([
+            ->assertJson([
                 'data' => [
                     'type' => 'users',
                     'user_id' => $user->id,

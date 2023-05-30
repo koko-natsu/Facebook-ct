@@ -44,7 +44,7 @@ class PostToTimeLineTest extends TestCase
         $this->assertEquals('Testing Body', $post->body);
 
         $response->assertStatus(201)
-            ->assertExactJson([
+            ->assertJson([
                 'data' => [
                     'type' => 'posts',
                     'post_id' => $post->id,

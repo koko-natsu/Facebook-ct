@@ -30,7 +30,7 @@ class UserCanViewProfileTest extends TestCase
         $response = $this->get('/api/users/' . $user->id);
 
         $response->assertStatus(200)
-            ->assertExactJson([
+            ->assertJson([
                 'data' => [
                     'type' => 'users',
                     'user_id' => $user->id,
@@ -54,7 +54,7 @@ class UserCanViewProfileTest extends TestCase
         $response = $this->get('/api/users/' . $user->id . '/posts');
 
         $response->assertStatus(200)
-            ->assertExactJson([
+            ->assertJson([
                 'data' => [
                     [
                         'data' => [

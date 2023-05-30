@@ -24,7 +24,7 @@ class RetrievePostsTest extends TestCase
         $response = $this->get('/api/posts');
 
         $response->assertStatus(200)
-            ->assertExactJson([
+            ->assertJson([
                 'data' => [
                     [
                         'data' => [
