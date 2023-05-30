@@ -1,6 +1,7 @@
 <script>
 import axios from 'axios';
 import Post from "@/components/Post.vue";
+import { mapGetters } from 'vuex';
 
 export default {
     name: "Show",
@@ -11,31 +12,13 @@ export default {
 
     data() {
         return {
-            user: {
-                data: {
-                    attributes: {
-                        name: '',
-                    }
-                }
-            },
             posts: {},
-            userLoading: true,
             postLoading: true,
         }
     },
 
     mounted() {
-        axios.get('/api/users/' + this.$route.params.userId)
-            .then(res => {
-                this.user = res.data;
-            })
-            .catch(error => {
-                console.log('Unable to fetch the user from the server.');
-            })
-            .finally(() => {
-                this.userLoading = false;
-            });
-
+        this.$store.dispatch('fetchUser',  this.$route.params.userId);
 
         axios.get('/api/users/' + this.$route.params.userId + '/posts')
             .then(res => {
@@ -47,6 +30,12 @@ export default {
             .finally(() => {
                 this.postLoading = false;
             });
+    },
+
+    computed: {
+        ...mapGetters({
+            user: 'user',
+        }),
     }
 }
 
@@ -66,7 +55,13 @@ export default {
                     <img src="https://th.bing.com/th/id/OIP.UghT0woG1H9eTHb_F0LXyAHaFA?w=226&h=180&c=7&r=0&o=5&dpr=1.2&pid=1.7" alt="profile image for user" class="w-32 h-32 border-4 border-gray-200 shadow-lg object-cover rounded-full">
                 </div>
 
-                <p class="text-2xl text-gray-200 ml-4">{{ this.user.data.attributes.name }}</p>
+                <p class="text-2xl text-gray-200 ml-4">{{ user.data.attributes.name }}</p>
+            </div>
+
+            <div class="absolute flex items-center bottom-0 right-0 mb-8 mr-12 z-20">
+                <button class="py-1 px-3 bg-gray-400 rounded  focus:outline-none focus:ring focus:ring-blue-400">
+                    Add Friend
+                </button>
             </div>
 
         </div>
