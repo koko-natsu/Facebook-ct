@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col flex-1 h-screen overflow-y-hidden">
+    <div class="flex flex-col flex-1 h-screen overflow-y-hidden" v-if="authUser">
         <Nav />
 
         <div class="flex overflow-y-hidden flex-1">
@@ -15,6 +15,7 @@
 <script>
     import Nav from '@/components/Nav.vue';
     import Sidebar from '@/components/Sidebar.vue';
+    import { mapGetters } from 'vuex';
 
     export default {
         name: "App",
@@ -26,6 +27,12 @@
 
         mounted() {
             this.$store.dispatch('fetchAuthUser');
+        },
+
+        computed: {
+            ...mapGetters({
+                authUser: 'authUser',
+            }),
         },
 
         watch: {

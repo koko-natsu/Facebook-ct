@@ -53,6 +53,23 @@ class FriendsTest extends TestCase
 
 
     /** @test */
+    function a_user_can_send_a_friend_request_only_once()
+    {
+        $this->actingAs($this->user, 'api');
+
+        $response = $this->post('/api/friend-request', [
+            'friend_id' => $this->anotherUser->id,
+        ])->assertStatus(200);
+        
+        $response = $this->post('/api/friend-request', [
+            'friend_id' => $this->anotherUser->id,
+        ])->assertStatus(200);
+
+        $this->assertCount(1, Friend::all());
+    }
+
+
+    /** @test */
     function only_valid_users_can_be_requested()
     {
         $this->actingAs($this->user, 'api');
@@ -99,6 +116,8 @@ class FriendsTest extends TestCase
                 'friend_request_id' => $friendRequest->id,
                 'attributes' => [
                     'confirmed_at' => $friendRequest->confirmed_at->diffForHumans(),
+                    'friend_id' => $friendRequest->friend_id,
+                    'user_id'   => $friendRequest->user_id,
                 ]
             ],
             'links' => [
@@ -204,24 +223,22 @@ class FriendsTest extends TestCase
 
         $this->get('/api/users/' .$this->anotherUser->id)
             ->assertStatus(200)
-            ->assertExactJson([
+            ->assertJson([
                 'data' => [
                     'type' => 'users',
                     'user_id' => $this->anotherUser->id,
                     'attributes' => [
                         'name' => $this->anotherUser->name,
                         'friendship' => [
-                            'attributes' => [
-                                'data' => [
-                                    'type' => 'friend-request',
-                                    'friend_request_id' => $friendRequest->id,
-                                    'attributes' => [
-                                        'confirmed_at' => '1 day ago',
-                                    ]
-                                ],
-                                'links' => [
-                                    'self' => url('/users/' .$this->anotherUser->id),
+                            'data' => [
+                                'type' => 'friend-request',
+                                'friend_request_id' => $friendRequest->id,
+                                'attributes' => [
+                                    'confirmed_at' => '1 day ago',
                                 ]
+                            ],
+                            'links' => [
+                                'self' => url('/users/' .$this->anotherUser->id),
                             ]
                         ]
                     ]
@@ -256,17 +273,15 @@ class FriendsTest extends TestCase
                     'attributes' => [
                         'name' => $this->anotherUser->name,
                         'friendship' => [
-                            'attributes' => [
-                                'data' => [
-                                    'type' => 'friend-request',
-                                    'friend_request_id' => $friendRequest->id,
-                                    'attributes' => [
-                                        'confirmed_at' => '1 day ago',
-                                    ]
-                                ],
-                                'links' => [
-                                    'self' => url('/users/' .$this->user->id),
+                            'data' => [
+                                'type' => 'friend-request',
+                                'friend_request_id' => $friendRequest->id,
+                                'attributes' => [
+                                    'confirmed_at' => '1 day ago',
                                 ]
+                            ],
+                            'links' => [
+                                'self' => url('/users/' .$this->user->id),
                             ]
                         ]
                     ]

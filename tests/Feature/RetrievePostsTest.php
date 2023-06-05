@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\Post;
+use App\Models\Friend;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -13,13 +14,30 @@ class RetrievePostsTest extends TestCase
 {
     use RefreshDatabase;
 
+    public $user;
+    public $anotherUser;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+        $this->anotherUser = User::factory()->create();
+    }
+
     /** @test */
     function a_user_can_retrieve_posts()
     {
         $this->withoutExceptionHandling();
 
-        $this->actingAs($user = User::factory()->create(), 'api');
-        $posts = Post::factory(2)->create(['user_id' => $user->id]);
+        $this->actingAs($this->user, 'api');
+        Friend::create([
+            'user_id' => $this->user->id,
+            'friend_id' => $this->anotherUser->id,
+            'confirmed_at' => now(),
+            'status' => 1,
+        ]);
+
+        $posts = Post::factory(2)->create(['user_id' => $this->anotherUser->id]);
 
         $response = $this->get('/api/posts');
 
@@ -34,13 +52,13 @@ class RetrievePostsTest extends TestCase
                                 'posted_by' => [
                                     'data' => [
                                         'type' => 'users',
-                                        'user_id' => $user->id,
+                                        'user_id' => $this->anotherUser->id,
                                         'attributes' => [
-                                            'name' => $user->name,
+                                            'name' => $this->anotherUser->name,
                                         ]
                                     ],
                                     'links' => [
-                                        'self' => url('/users/' .$user->id)
+                                        'self' => url('/users/' .$this->anotherUser->id)
                                     ]
                                 ],
                                 'body' => $posts->last()->body,
@@ -60,13 +78,13 @@ class RetrievePostsTest extends TestCase
                                 'posted_by' => [
                                     'data' => [
                                         'type' => 'users',
-                                        'user_id' => $user->id,
+                                        'user_id' => $this->anotherUser->id,
                                         'attributes' => [
-                                            'name' => $user->name,
+                                            'name' => $this->anotherUser->name,
                                         ]
                                     ],
                                     'links' => [
-                                        'self' => url('/users/' .$user->id)
+                                        'self' => url('/users/' .$this->anotherUser->id)
                                     ]
                                 ],
                                 'body' => $posts->first()->body,
@@ -89,8 +107,10 @@ class RetrievePostsTest extends TestCase
     /** @test */
     function a_user_can_only_retrieve_their_posts()
     {
-        $this->actingAs($user = User::factory()->create(), 'api');
-        $posts = Post::factory(2)->create();
+        $this->actingAs($this->user, 'api');
+        $posts = Post::factory(2)->create([
+            'user_id' => $this->anotherUser->id,
+        ]);
 
         $response = $this->get('/api/posts');
 
