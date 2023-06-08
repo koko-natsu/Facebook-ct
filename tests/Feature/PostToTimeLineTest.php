@@ -15,8 +15,6 @@ class PostToTimeLineTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->withoutExceptionHandling();
         User::factory()->create();
     }
 
@@ -27,14 +25,8 @@ class PostToTimeLineTest extends TestCase
         $this->actingAs($user = User::find(1), 'api');
 
         $response = $this->post('/api/posts', [
-            'data' => [
-                'type' => 'posts',
-                'attributes' => [
-                    'body' => 'Testing Body',
-                    'image' => 'image.jpg',
-                    'created_at' => now(),
-                ]
-            ]
+            'body' => 'Testing Body',
+            'image' => 'image.jpg',
         ]);
 
         $post = Post::first();
