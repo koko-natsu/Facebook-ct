@@ -18,9 +18,7 @@ class Like extends JsonResource
             'data' => [
                 'type' => 'likes',
                 'like_id' => $this->id,
-                'attributes' => [
-
-                ],
+                'attributes' => [],
             ],
             'links' => [
                 'self' => url('/posts/'.$this->pivot->post_id),

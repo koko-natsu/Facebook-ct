@@ -70,6 +70,9 @@ class LikesTest extends TestCase
                                                 'type' => 'likes',
                                                 'like_id' => 1,
                                                 'attributes' => []
+                                            ],
+                                            'links' => [
+                                                'self' => url('/posts/'.$post->id),
                                             ]
                                         ]
                                     ],
