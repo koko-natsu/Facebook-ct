@@ -4,8 +4,21 @@
             <div>
                 <img src="https://th.bing.com/th/id/OIP.UghT0woG1H9eTHb_F0LXyAHaFA?w=226&h=180&c=7&r=0&o=5&dpr=1.2&pid=1.7" alt="profile image for user" class="w-8 h-8 object-cover rounded-full">
             </div>
-            <div class="flex-1 mx-4">
-                <input type="text" name="body" class="w-full pl-4 h-8 bg-gray-200 rounded-full focus:outline-none focus:ring focus:ring-blue-400 text-sm" placeholder="Add a post">
+            <div class="flex-1 flex mx-4">
+                <input 
+                    v-model="postMessage"
+                    type="text"
+                    name="body" 
+                    class="w-full pl-4 h-8 bg-gray-200 rounded-full focus:outline-none focus:ring focus:ring-blue-400 text-sm"
+                    placeholder="Add a post">
+                <transition name="fade">
+                    <button
+                        v-if="postMessage"
+                        @click="$store.dispatch('postMessage')"
+                        class="bg-gray-200 ml-2 px-2 pl-1 rounded-full focus:outline-none focus:ring focus:ring-blue-400">
+                        Post
+                    </button>
+                </transition>
             </div>
             <div>
                 <button class="flex justify-center items-center w-10 h-10 rounded-full bg-gray-200">
@@ -17,7 +30,29 @@
 </template>
 
 <script>
+import _ from 'lodash';
+
 export default {
-    name: "NewPost"
+    name: "NewPost",
+
+    computed: {
+        postMessage: {
+            get() {
+                return this.$store.getters.postMessage;
+            },
+            set: _.debounce(function (postMessage) {
+                this.$store.commit('updateMessage', postMessage)
+            }, 300),
+        }
+    }
 }
 </script>
+
+<style scoped>
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .8s ease;
+    }
+    .fade-enter-from, .fade-leave-to {
+        opacity: 0;
+    }
+</style>

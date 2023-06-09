@@ -47,6 +47,7 @@
 <script>
 import axios from 'axios';
 import Post from "@/components/Post.vue";
+
 import { mapGetters } from 'vuex';
 
 export default {
