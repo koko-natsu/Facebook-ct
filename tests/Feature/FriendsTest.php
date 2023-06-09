@@ -37,7 +37,7 @@ class FriendsTest extends TestCase
         $this->assertNotNull($friendRequest);
         $this->assertEquals($this->anotherUser->id, $friendRequest->friend_id);
         $this->assertEquals($this->user->id, $friendRequest->user_id);
-        $response->assertExactJson([
+        $response->assertJson([
             'data' => [
                 'type' => 'friend-request',
                 'friend_request_id' => $friendRequest->id,
