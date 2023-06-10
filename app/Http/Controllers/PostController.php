@@ -8,12 +8,12 @@ use App\Models\Post;
 use App\Models\Friend;
 use App\Http\Resources\Post as PostResource;
 use App\Http\Resources\PostCollection;
-
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostController extends Controller
 {
 
-    public function index()
+    public function index(): PostCollection
     {
         $friends = Friend::friendships();
 

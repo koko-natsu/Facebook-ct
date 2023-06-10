@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Friend;
 use App\Http\Resources\Friend as FriendResource;
 use App\Exceptions\FriendRequestNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class FriendRequestResponseController extends Controller
 {
-    public function store()
+    public function store(): JsonResource
     {
         $data = request()->validate([
             'user_id' => 'required',
@@ -35,7 +37,7 @@ class FriendRequestResponseController extends Controller
 
 
 
-    public function destroy()
+    public function destroy(): JsonResponse
     {
         $data = request()->validate([
             'user_id' => 'required',

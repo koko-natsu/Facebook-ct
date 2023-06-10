@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -42,17 +43,17 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function likedPosts()
+    public function likedPosts(): Relation
     {
         return $this->belongsToMany(Post::class, 'likes', 'user_id', 'post_id');
     }
 
-    public function posts()
+    public function posts(): Relation
     {
         return $this->hasMany(Post::class);
     }
 
-    public function friends()
+    public function friends(): Relation
     {
         return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id');
     }

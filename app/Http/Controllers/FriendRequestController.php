@@ -10,14 +10,15 @@ use App\Models\User;
 use App\Http\Resources\Friend as FriendResource;
 use App\Exceptions\UserNotFoundException;
 use App\Exceptions\ValidationErrorException;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class FriendRequestController extends Controller
 {
-    public function store()
+    public function store(): JsonResource
     {
-       $data = request()->validate([
-            'friend_id' => 'required',
-       ]);
+        $data = request()->validate([
+                'friend_id' => 'required',
+        ]);
 
         try {
             User::findOrFail($data['friend_id'])
