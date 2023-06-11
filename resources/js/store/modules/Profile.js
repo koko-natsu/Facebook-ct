@@ -1,20 +1,7 @@
 
 const state = {
-    user: {
-        data: {
-            user_id: '',
-            attributes: {
-                name: '',
-                friendship: null,
-            }
-        }
-    },
-    posts: {
-        data: {},
-    },
+    user: {},
     userStatus: null,
-    postStatus: null,
-    friendButtonText: null,
 };
 
 
@@ -22,15 +9,9 @@ const getters = {
     user: (state) => {
         return state.user;
     },
-
-    posts: (state) => {
-        return state.posts;
-    },
-
     status: (state) => {
         return {
             user: state.userStatus,
-            post: state.postStatus,
         };
     },
 
@@ -73,20 +54,6 @@ const actions = {
             })
 
     },
-
-    fetchUserPosts({commit, state}, userId) {
-        commit('setPostStatus', 'loading');
-
-        axios.get('/api/users/' + userId + '/posts')
-            .then(res => {
-                commit('setPosts', res.data);
-                commit('setPostStatus', 'success');
-            })
-            .catch(error => {
-                console.log('Unable to fetch posts');
-            })
-    },
-
     sendFriendRequest({commit, getters}, friendId) {
         if (getters.friendButtonText !== 'Add Friend') {
             return ;
@@ -99,7 +66,6 @@ const actions = {
             .catch(error => {
             })
     },
-
     acceptFriendRequest({commit, state}, userId) {
         axios.post('/api/friend-request-response', { 'user_id': userId, 'status': 1 })
             .then(res => {
@@ -108,7 +74,6 @@ const actions = {
             .catch(error => {
             })
     },
-
     ignoreFriendRequest({commit, state}, userId) {
         axios.delete('/api/friend-request-response/delete', { data: { 'user_id': userId } })
             .then(res => {
@@ -124,21 +89,11 @@ const mutations = {
     setUser(state, user) {
         state.user = user;
     },
-
-    setPosts(state, posts) {
-        state.posts = posts;
-    },
-    
     setUserFriendship(state, friendship) {
         state.user.data.attributes.friendship = friendship;
     },
-
     setUserStatus(state, status) {
         state.userStatus = status;
-    },
-
-    setPostStatus(state, status) {
-        state.postStatus = status;
     },
 };
 

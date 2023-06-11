@@ -38,14 +38,13 @@
 
         <div v-if="posts.data.length < 1">NO posts found. Get started...</div>
 
-        <Post v-else v-for="post in posts.data" :key="post.id" :post="post" />
+        <Post v-else v-for="(post, postKey) in posts.data" :postKey="postKey" :post="post" />
 
     </div>
 </template>
 
 
 <script>
-import axios from 'axios';
 import Post from "@/components/Post.vue";
 
 import { mapGetters } from 'vuex';
