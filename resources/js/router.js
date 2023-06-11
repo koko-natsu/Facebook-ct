@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import NewsFeed from "@/views/NewsFeed.vue";
 import UserShow from "@/views/Users/Show.vue";
 
@@ -10,7 +10,7 @@ const routes = [
         component: NewsFeed,
         meta: {
             title: 'News Feed',
-        }
+        },
     },
     {
         path: '/users/:userId(\\d+)?',
@@ -24,6 +24,6 @@ const routes = [
 
 
 export default createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes,
 })
