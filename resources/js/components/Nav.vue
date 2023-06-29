@@ -25,7 +25,7 @@
             </router-link>
 
             <router-link :to="{ path: `/users/${authUser.data.user_id}` }" class="px-6 h-full flex items-center">
-                <img src="https://th.bing.com/th/id/OIP.UghT0woG1H9eTHb_F0LXyAHaFA?w=226&h=180&c=7&r=0&o=5&dpr=1.2&pid=1.7" alt="profile image for user" class="w-8 h-8 object-cover rounded-full">
+                <img :src="authUser.data.attributes.profile_image.data.attributes.path" alt="profile image for user" class="w-8 h-8 object-cover rounded-full">
             </router-link>
             
             <router-link to="/" class="px-6 h-full flex items-center">
@@ -40,17 +40,11 @@
 </template>
 
 
-<script>
-import { mapGetters } from 'vuex';
+<script setup>
+    import { useStore } from 'vuex';
+    import { computed } from 'vue';
 
+    const store = useStore();
 
-export default {
-        name: "Nav",
-
-        computed: {
-            ...mapGetters({
-                authUser: 'authUser',
-            })
-        }
-    };
+    const authUser = computed(() => store.getters.authUser);
 </script>

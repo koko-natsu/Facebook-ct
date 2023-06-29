@@ -3,7 +3,7 @@
         <div class="flex flex-col p-4">
             <div class="flex items-center">
                 <div class="w-8">
-                    <img src="https://th.bing.com/th/id/OIP.UghT0woG1H9eTHb_F0LXyAHaFA?w=226&h=180&c=7&r=0&o=5&dpr=1.2&pid=1.7" alt="profile image for user" class="w-8 h-8 object-cover rounded-full">
+                    <img :src="post.data.attributes.posted_by.data.attributes.profile_image.data.attributes.path" alt="profile image for user" class="w-8 h-8 object-cover rounded-full">
                 </div>
                 <div class="ml-6">
                     <div class="text-sm font-bold">{{ post.data.attributes.posted_by.data.attributes.name }}</div>
@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <div class="w-full" v-if="post.data.attributes.image">
+        <div class="w-full" v-if="post.data.attributes.image != 'null'">
             <img :src="`${post.data.attributes.image}`" alt="post image" class="w-full">
         </div>
 
@@ -32,7 +32,7 @@
         <div class="flex justify-between border-1 border-gray-400 m-4">
             <button class="flex justify-center items-center py-2 rounded-lg text-sm text-gray-600 w-full"
                 :class="[post.data.attributes.likes.user_likes_post ? 'bg-blue-600 text-white' : '']"
-                @click="$store.dispatch('likePost', { postId: post.data.post_id, postKey: postKey })">
+                @click="$store.dispatch('likePost', { postId: post.data.post_id, postKey: data.postKey })">
 
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="fill-current w-5 h-5"><path d="M20.8 15.6c.4-.5.6-1.1.6-1.7 0-.6-.3-1.1-.5-1.4.3-.7.4-1.7-.5-2.6-.7-.6-1.8-.9-3.4-.8-1.1.1-2 .3-2.1.3-.2 0-.4.1-.7.1 0-.3 0-.9.5-2.4.6-1.8.6-3.1-.1-4.1-.7-1-1.8-1-2.1-1-.3 0-.6.1-.8.4-.5.5-.4 1.5-.4 2-.4 1.5-2 5.1-3.3 6.1l-.1.1c-.4.4-.6.8-.8 1.2-.2-.1-.5-.2-.8-.2H3.7c-1 0-1.7.8-1.7 1.7v6.8c0 1 .8 1.7 1.7 1.7h2.5c.4 0 .7-.1 1-.3l1 .1c.2 0 2.8.4 5.6.3.5 0 1 .1 1.4.1.7 0 1.4-.1 1.9-.2 1.3-.3 2.2-.8 2.6-1.6.3-.6.3-1.2.3-1.6.8-.8 1-1.6.9-2.2.1-.3 0-.6-.1-.8zM3.7 20.7c-.3 0-.6-.3-.6-.6v-6.8c0-.3.3-.6.6-.6h2.5c.3 0 .6.3.6.6v6.8c0 .3-.3.6-.6.6H3.7zm16.1-5.6c-.2.2-.2.5-.1.7 0 0 .2.3.2.7 0 .5-.2 1-.8 1.4-.2.2-.3.4-.2.6 0 0 .2.6-.1 1.1-.3.5-.9.9-1.8 1.1-.8.2-1.8.2-3 .1h-.1c-2.7.1-5.4-.3-5.4-.3H8v-7.2c0-.2 0-.4-.1-.5.1-.3.3-.9.8-1.4 1.9-1.5 3.7-6.5 3.8-6.7v-.3c-.1-.5 0-1 .1-1.2.2 0 .8.1 1.2.6.4.6.4 1.6-.1 3-.7 2.1-.7 3.2-.2 3.7.3.2.6.3.9.2.3-.1.5-.1.7-.1h.1c1.3-.3 3.6-.5 4.4.3.7.6.2 1.4.1 1.5-.2.2-.1.5.1.7 0 0 .4.4.5 1 0 .3-.2.6-.5 1z"/></svg>
 
@@ -51,14 +51,14 @@
                 <input v-model="commentBody" type="text" name="comment" class="w-full mt-2 pl-4 h-8 bg-gray-200  rounded-full focus:outline-none focus:ring focus:ring-blue-400" placeholder="Add Comment">
                 <button v-if="commentBody"
                     class="bg-gray-200 ml-2 px-2 py-1 rounded-full focus:outline-none"
-                    @click="$store.dispatch('commentPost', { body: commentBody, postId: post.data.post_id, postKey: postKey }); commentBody=''">
+                    @click="$store.dispatch('commentPost', { body: commentBody, postId: post.data.post_id, postKey: data.postKey }); commentBody=''">
                     Post
                 </button>
             </div>
 
             <div class="flex mt-3 items-center" v-for="comment in post.data.attributes.comments.data">
                 <div class="w-8">
-                    <img src="https://th.bing.com/th/id/OIP.UghT0woG1H9eTHb_F0LXyAHaFA?w=226&h=180&c=7&r=0&o=5&dpr=1.2&pid=1.7" alt="profile image for user" class="w-8 h-8 object-cover rounded-full"/>
+                    <img :src="comment.data.attributes.commented_by.data.attributes.profile_image.data.attributes.path" alt="profile image for user" class="w-8 h-8 object-cover rounded-full"/>
                 </div>
     
                 <div class="ml-4 flex-1">
@@ -83,20 +83,19 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: "Post",
+<script setup>
+    import { reactive, ref } from 'vue';
 
-    props: [
-        'post',
-        'postKey',
-    ],
+    const props = defineProps({
+        post: Object,
+        postKey: Number,
+    });
 
-    data:() => {
-        return {
-            comments: false,
-            commentBody: '',
-        }
-    }
-}
+    const comments = ref(false);
+    const commentBody = ref('');
+
+    const data = reactive({
+        post: props.post,
+        postKey: props.postKey,
+    });
 </script>

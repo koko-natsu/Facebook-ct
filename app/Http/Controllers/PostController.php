@@ -9,6 +9,8 @@ use App\Models\Friend;
 use App\Http\Resources\Post as PostResource;
 use App\Http\Resources\PostCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
+use Intervention\Image\Facades\Image;
 
 class PostController extends Controller
 {
@@ -32,12 +34,26 @@ class PostController extends Controller
 
     public function store(Request $request): PostResource
     {
+
         $data = $request->validate([
             'body' => '',
             'image' => '',
+            'width' => '',
+            'height' => '',
         ]);
 
-        $post = $request->user()->posts()->create($data);
+        if(isset($data['image'])) {
+            $image = $data['image']->store('post-images', 'public');
+
+            Image::make($data['image'])
+                ->fit($data['width'], $data['height'])
+                ->save(storage_path('app/public/post-images/'.$data['image']->hashName()));
+        }
+
+        $post = $request->user()->posts()->create([
+            'body' => $data['body'],
+            'image' => $image ?? null,
+        ]);
 
         return new PostResource($post);
     }

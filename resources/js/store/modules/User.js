@@ -1,9 +1,5 @@
 const state = {
-    user: {
-        data: {
-            user_id: '',
-        }
-    },
+    user: null,
     userStates: {},
 };
 

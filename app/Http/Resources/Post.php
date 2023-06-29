@@ -4,7 +4,9 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\User as UserResource;
+use Illuminate\Support\Facades\Storage;
 
+use function PHPUnit\Framework\isEmpty;
 
 class Post extends JsonResource
 {
@@ -16,6 +18,12 @@ class Post extends JsonResource
      */
     public function toArray($request)
     {
+
+        $image_path = Storage::url($this->image);
+        if($image_path == '/storage/') {
+            $image_path = 'null';
+        }
+
         return [
             'data' => [
                 'type' => 'posts',
@@ -25,7 +33,7 @@ class Post extends JsonResource
                     'likes' => new LikeCollection($this->likes),
                     'comments' => new CommentCollection($this->comments),
                     'body' => $this->body,
-                    'image' => $this->image,
+                    'image' => $image_path,
                     'posted_at' => $this->created_at->diffForHumans()
                 ]
             ],

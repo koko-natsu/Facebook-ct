@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Post;
+use Illuminate\Support\Facades\Storage;
 
 class UserCanViewProfileTest extends TestCase
 {
@@ -62,7 +63,7 @@ class UserCanViewProfileTest extends TestCase
                             'post_id' => $post->id,
                             'attributes' => [
                                 'body' => $post->body,
-                                'image' => $post->image,
+                                'image' => url($post->image),
                                 'posted_at' => $post->created_at->diffForHumans(),
                                 'posted_by' => [
                                     'data' => [

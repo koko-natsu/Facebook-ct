@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class PostToTimeLineTest extends TestCase
@@ -16,6 +18,8 @@ class PostToTimeLineTest extends TestCase
     {
         parent::setUp();
         User::factory()->create();
+
+        Storage::fake('public');
     }
 
 
@@ -26,7 +30,6 @@ class PostToTimeLineTest extends TestCase
 
         $response = $this->post('/api/posts', [
             'body' => 'Testing Body',
-            'image' => 'image.jpg',
         ]);
 
         $post = Post::first();
@@ -54,12 +57,40 @@ class PostToTimeLineTest extends TestCase
                             ]
                         ],
                         'body' => 'Testing Body',
-                        'image' => 'image.jpg',
+
                         'posted_at' => $post->created_at->diffForHumans(),
                     ]
                 ],
                 'links' => [
                     'self' => url('/posts/'.$post->id),
+                ]
+            ]);
+    }
+
+    /** @test */
+    function a_user_can_post_a_text_post_with_an_image()
+    {
+        $this->withoutExceptionHandling();
+        $this->actingAs($user = User::find(1), 'api');
+
+        $file = UploadedFile::fake()->image('user-image.jpg');
+
+        $response = $this->post('/api/posts', [
+            'body' => 'Testing Body',
+            'image' => $file,
+            'width' => 100,
+            'height' => 100,
+        ]);
+
+        Storage::disk('public')->assertExists('post-images/'.$file->hashName());
+
+        $response->assertStatus(201)
+            ->assertJson([
+                'data' => [
+                    'attributes' => [
+                        'body' => 'Testing Body',
+                        'image' => url('post-images/'.$file->hashName()),
+                    ]
                 ]
             ]);
     }

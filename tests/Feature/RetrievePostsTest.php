@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Friend;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 
@@ -62,7 +63,7 @@ class RetrievePostsTest extends TestCase
                                     ]
                                 ],
                                 'body' => $posts->last()->body,
-                                'image' => $posts->last()->image,
+                                'image' => url($posts->last()->image),
                                 'posted_at' => $posts->last()->created_at->diffForHumans(),
                             ]
                         ],
@@ -88,7 +89,7 @@ class RetrievePostsTest extends TestCase
                                     ]
                                 ],
                                 'body' => $posts->first()->body,
-                                'image' => $posts->first()->image,
+                                'image' => url($posts->first()->image),
                                 'posted_at' => $posts->first()->created_at->diffForHumans(),
                             ]
                         ],

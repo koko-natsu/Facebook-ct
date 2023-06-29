@@ -43,6 +43,32 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+
+    public function images(): Relation
+    {
+        return $this->hasMany(UserImage::class);
+    }
+
+    public function coverImage(): Relation
+    {
+        return $this->hasOne(UserImage::class)
+            ->orderByDesc('id')
+            ->where('location', 'cover')
+            ->withDefault(function ($userImage) {
+                $userImage->path = 'user-images/cover-default-image.jpg';
+            });
+    }
+
+    public function profileImage(): Relation
+    {
+        return $this->hasOne(UserImage::class)
+            ->orderByDesc('id')
+            ->where('location', 'profile')
+            ->withDefault(function ($userImage) {
+                $userImage->path = 'user-images/user-default-image.png';
+            });;
+    }
+
     public function likedPosts(): Relation
     {
         return $this->belongsToMany(Post::class, 'likes', 'user_id', 'post_id');
